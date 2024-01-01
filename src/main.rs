@@ -125,5 +125,16 @@ mod tests {
 
         let stdout_str = String::from_utf8(output.stdout).expect("Invalid UTF-8");
         assert!(stdout_str.contains("The score for (-1.4, 1.4) is: 5"));
+
+        // (4, -4) test, score 1)
+        let output = Command::new("target/debug/darts")
+            .args(&["--x_coord", "4.0", "--y_coord", "-4.0"])
+            .output()
+            .expect("Failed to execute process");
+
+        assert!(output.status.success());
+
+        let stdout_str = String::from_utf8(output.stdout).expect("Invalid UTF-8");
+        assert!(stdout_str.contains("The score for (4, -4) is: 1"));
     }
 }
