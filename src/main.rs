@@ -50,11 +50,13 @@ pub fn calculate_score(x: f64, y: f64) -> i8 {
     }
 }
 
+// Test module
 #[cfg(test)]
 mod tests {
     use super::*;
     use std::process::Command;
 
+    // Unit tests
     #[test]
     fn test_score_10() {
         assert_eq!(calculate_score(0.0, 0.0), 10);
@@ -88,17 +90,29 @@ mod tests {
         assert_eq!(calculate_score(-11.0, -11.0), 0);
     }
 
+    // Integration tests
     #[test]
     fn test_main_function_with_valid_input() {
+        // (0, 0) test, score 10
         let output = Command::new("target/debug/darts")
-            .args(&["--x_coord", "2.0", "--y_coord", "-2.0"])
+            .args(&["--x_coord", "0.0", "--y_coord", "0.0"])
             .output()
             .expect("Failed to execute process");
 
         assert!(output.status.success());
 
         let stdout_str = String::from_utf8(output.stdout).expect("Invalid UTF-8");
-        assert!(stdout_str.contains("The score for (2, -2) is: 5"));
-    }
+        assert!(stdout_str.contains("The score for (0, 0) is: 10"));
 
+        // (0.7, 0.7) test, score 10)
+        let output = Command::new("target/debug/darts")
+            .args(&["--x_coord", "0.7", "--y_coord", "0.7"])
+            .output()
+            .expect("Failed to execute process");
+
+        assert!(output.status.success());
+
+        let stdout_str = String::from_utf8(output.stdout).expect("Invalid UTF-8");
+        assert!(stdout_str.contains("The score for (0.7, 0.7) is: 10"));
+    }
 }
