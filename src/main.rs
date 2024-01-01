@@ -40,13 +40,13 @@ pub fn calculate_score(x: f64, y: f64) -> i8 {
     let point = Complex64::new(x, y);
     let magnitude: f64 = point.norm_sqr().sqrt();
     if magnitude < 1.0 {
-        return 10;
+        10
     } else if magnitude >= 1.0 && magnitude < 5.0 {
-        return 5;
+        5
     } else if magnitude >= 5.0 && magnitude < 10.0 {
-        return 1;
+        1
     } else {
-        return 0;
+        0
     }
 }
 
@@ -61,7 +61,7 @@ mod tests {
         assert_eq!(calculate_score(0.7, 0.7), 10);
         assert_eq!(calculate_score(-0.7, 0.7), 10);
         assert_eq!(calculate_score(0.7, -0.7), 10);
-        assert_eq!(calculate_score(-0.7, 0.7), 10);
+        assert_eq!(calculate_score(-0.7, -0.7), 10);
     }
 
     #[test]
@@ -69,7 +69,7 @@ mod tests {
         assert_eq!(calculate_score(1.4, 1.4), 5);
         assert_eq!(calculate_score(-1.4, 1.4), 5);
         assert_eq!(calculate_score(1.4, -1.4), 5);
-        assert_eq!(calculate_score(-1.4, 1.4), 5);
+        assert_eq!(calculate_score(-1.4, -1.4), 5);
     }
 
     #[test]
