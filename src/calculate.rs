@@ -1,12 +1,9 @@
-use num_complex::Complex64;
-
 pub fn calculate_score(x: f64, y: f64) -> Option<i8> {
     if x.is_nan() || y.is_nan() || x.is_infinite() || y.is_infinite() {
         return None;
     }
 
-    let point = Complex64::new(x, y);
-    let magnitude: f64 = point.norm_sqr().sqrt();
+    let magnitude: f64 = x.hypot(y);
     if magnitude < 1.0 {
         Some(10)
     } else if magnitude < 5.0 {
