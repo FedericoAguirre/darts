@@ -1,16 +1,20 @@
 use num_complex::Complex64;
 
-pub fn calculate_score(x: f64, y: f64) -> i8 {
+pub fn calculate_score(x: f64, y: f64) -> Option<i8> {
+    if x.is_nan() || y.is_nan() || x.is_infinite() || y.is_infinite() {
+        return None;
+    }
+
     let point = Complex64::new(x, y);
     let magnitude: f64 = point.norm_sqr().sqrt();
     if magnitude < 1.0 {
-        10
-    } else if magnitude >= 1.0 && magnitude < 5.0 {
-        5
-    } else if magnitude >= 5.0 && magnitude < 10.0 {
-        1
+        Some(10)
+    } else if magnitude < 5.0 {
+        Some(5)
+    } else if magnitude < 10.0 {
+        Some(1)
     } else {
-        0
+        Some(0)
     }
 }
 
@@ -21,35 +25,49 @@ mod tests {
 
     #[test]
     fn test_score_10() {
-        assert_eq!(calculate_score(0.0, 0.0), 10);
-        assert_eq!(calculate_score(0.7, 0.7), 10);
-        assert_eq!(calculate_score(-0.7, 0.7), 10);
-        assert_eq!(calculate_score(0.7, -0.7), 10);
-        assert_eq!(calculate_score(-0.7, -0.7), 10);
+        assert_eq!(calculate_score(0.0, 0.0), Some(10));
+        assert_eq!(calculate_score(0.7, 0.7), Some(10));
+        assert_eq!(calculate_score(-0.7, 0.7), Some(10));
+        assert_eq!(calculate_score(0.7, -0.7), Some(10));
+        assert_eq!(calculate_score(-0.7, -0.7), Some(10));
     }
 
     #[test]
     fn test_score_5() {
-        assert_eq!(calculate_score(1.4, 1.4), 5);
-        assert_eq!(calculate_score(-1.4, 1.4), 5);
-        assert_eq!(calculate_score(1.4, -1.4), 5);
-        assert_eq!(calculate_score(-1.4, -1.4), 5);
+        assert_eq!(calculate_score(1.4, 1.4), Some(5));
+        assert_eq!(calculate_score(-1.4, 1.4), Some(5));
+        assert_eq!(calculate_score(1.4, -1.4), Some(5));
+        assert_eq!(calculate_score(-1.4, -1.4), Some(5));
     }
 
     #[test]
     fn test_score_1() {
-        assert_eq!(calculate_score(4.0, 4.0), 1);
-        assert_eq!(calculate_score(-4.0, 4.0), 1);
-        assert_eq!(calculate_score(4.0, -4.0), 1);
-        assert_eq!(calculate_score(-4.0, -4.0), 1);
+        assert_eq!(calculate_score(4.0, 4.0), Some(1));
+        assert_eq!(calculate_score(-4.0, 4.0), Some(1));
+        assert_eq!(calculate_score(4.0, -4.0), Some(1));
+        assert_eq!(calculate_score(-4.0, -4.0), Some(1));
     }
 
     #[test]
     fn test_score_0() {
-        assert_eq!(calculate_score(11.0, 11.0), 0);
-        assert_eq!(calculate_score(-11.0, 11.0), 0);
-        assert_eq!(calculate_score(11.0, -11.0), 0);
-        assert_eq!(calculate_score(-11.0, -11.0), 0);
+        assert_eq!(calculate_score(11.0, 11.0), Some(0));
+        assert_eq!(calculate_score(-11.0, 11.0), Some(0));
+        assert_eq!(calculate_score(11.0, -11.0), Some(0));
+        assert_eq!(calculate_score(-11.0, -11.0), Some(0));
+    }
+
+    #[test]
+    fn test_invalid_nan() {
+        assert_eq!(calculate_score(f64::NAN, 0.0), None);
+        assert_eq!(calculate_score(0.0, f64::NAN), None);
+        assert_eq!(calculate_score(f64::NAN, f64::NAN), None);
+    }
+
+    #[test]
+    fn test_invalid_infinity() {
+        assert_eq!(calculate_score(f64::INFINITY, 0.0), None);
+        assert_eq!(calculate_score(0.0, f64::NEG_INFINITY), None);
+        assert_eq!(calculate_score(f64::INFINITY, f64::NEG_INFINITY), None);
     }
 
     #[test]
