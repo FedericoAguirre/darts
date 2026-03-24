@@ -28,8 +28,8 @@ fn main() {
         .try_get_matches()
         .unwrap_or_else(|e| e.exit());
 
-    let x = *matches.get_one::<f64>("x").expect("`x` is required");
 
+    let x = *matches.get_one::<f64>("x").expect("`x` is required");
     let y = *matches.get_one::<f64>("y").expect("`y` is required");
 
     match calculate::calculate_score(x, y) {
