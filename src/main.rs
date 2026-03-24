@@ -32,6 +32,11 @@ fn main() {
 
     let y = *matches.get_one::<f64>("y").expect("`y` is required");
 
-    let score = calculate::calculate_score(x, y);
-    println!("The score for ({}, {}) is: {}", x, y, score);
+    match calculate::calculate_score(x, y) {
+        Some(score) => println!("The score for ({}, {}) is: {}", x, y, score),
+        None => {
+            eprintln!("Error: Invalid coordinates (NaN or infinity)");
+            std::process::exit(1);
+        }
+    }
 }
