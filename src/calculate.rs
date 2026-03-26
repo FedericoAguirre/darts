@@ -2,16 +2,11 @@ pub fn calculate_score(x: f64, y: f64) -> Option<i8> {
     if x.is_nan() || y.is_nan() || x.is_infinite() || y.is_infinite() {
         return None;
     }
-
-    let magnitude: f64 = x.hypot(y);
-    if magnitude < 1.0 {
-        Some(10)
-    } else if magnitude < 5.0 {
-        Some(5)
-    } else if magnitude < 10.0 {
-        Some(1)
-    } else {
-        Some(0)
+    match x.hypot(y) {
+        r if r < 1.0 => Some(10),
+        r if r < 5.0 => Some(5),
+        r if r < 10.0 => Some(1),
+        _ => Some(0),
     }
 }
 
