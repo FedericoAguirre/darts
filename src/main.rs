@@ -1,5 +1,3 @@
-mod calculate;
-
 use clap::{value_parser, Arg, Command};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -31,7 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let x = matches.get_one::<f64>("x").copied().unwrap();
     let y = matches.get_one::<f64>("y").copied().unwrap();
 
-    let score = calculate::calculate_score(x, y).ok_or("Invalid coordinates (NaN or infinity)")?;
+    let score = darts_lib::calculate_score(x, y).ok_or("Invalid coordinates (NaN or infinity)")?;
 
     println!("The score for ({x}, {y}) is: {score}");
     Ok(())
