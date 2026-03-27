@@ -11,3 +11,7 @@ clap = "4.4.11"
 [lib]
 name = "darts_lib"
 path = "src/lib.rs"
+
+[[bin]]
+name = "darts"
+path = "src/main.rs"
