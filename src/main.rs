@@ -2,7 +2,7 @@ mod calculate;
 
 use clap::{value_parser, Arg, Command};
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = Command::new("Darts score calculator.")
         .version("0.1.0")
         .author("Federico Aguirre, federico.aguirre.cardiel@gmail.com")
@@ -31,11 +31,8 @@ fn main() {
     let x = matches.get_one::<f64>("x").copied().unwrap();
     let y = matches.get_one::<f64>("y").copied().unwrap();
 
-    match calculate::calculate_score(x, y) {
-        Some(score) => println!("The score for ({}, {}) is: {}", x, y, score),
-        None => {
-            eprintln!("Error: Invalid coordinates (NaN or infinity)");
-            std::process::exit(1);
-        }
-    }
+    let score = calculate::calculate_score(x, y).ok_or("Invalid coordinates (NaN or infinity)")?;
+
+    println!("The score for ({x}, {y}) is: {score}");
+    Ok(())
 }
