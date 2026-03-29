@@ -10,6 +10,8 @@ repository = "https://github.com/FedericoAguirre/darts/"
 
 [dependencies]
 clap = "4.4.11"
+csv = "1.4.0"
+serde = { version = "1", features = ["derive"] }
 
 [lib]
 name = "darts_lib"
@@ -25,3 +27,6 @@ lto = true       # Enable link-time optimization
 codegen-units = 1  # Single codegen unit for better optimization
 strip = true     # Strip debug symbols
 panic = "abort"  # Abort on panic for smaller binary
+
+[dev-dependencies]
+tempfile = "3.27.0"
