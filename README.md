@@ -12,8 +12,9 @@ This project pretends to show how to get started in Rust by creating a basic CLI
 
 - Show some of the basic concepts of [**Rust**](https://www.rust-lang.org/).
 - Show how to initialize a Rust project using the **cargo** tool.
-- Make use of **crates**.
+- Make use of **crates** (e.g., `clap`, `csv`, `serde`).
 - Show unit testing and integration testing usage.
+- Process multiple coordinates from CSV files.
 - Compilation and deployment in Rust.
 
 ## Rust installation
@@ -78,13 +79,19 @@ The **Cargo.toml** file serves to define the metadata of the executable and also
 
 The **src** folder contains all the modules and/or source files used in the binary.
 
-In this case, it only contains the **main.rs** file.
+In this case, it contains the **main.rs** file (binary entry point) and **lib.rs** file (library with score calculation logic).
 
 ### main.rs file
 
 The **main.rs** file has the code that will be executed.
 
-It also has the **unit tests** in it.
+It handles command-line argument parsing and delegates to the library functions.
+
+### lib.rs file
+
+The **lib.rs** file contains the core library functions, including score calculation and CSV processing.
+
+It also has the unit tests for the library.
 
 ### cargo add command
 
@@ -94,9 +101,11 @@ When used, it adds the crate into the **Cargo.toml** file in the **dependencies*
 
 The available Rust crates can be found in [crates.io](https://crates.io/).
 
-The darts project uses the clap crate:
+The darts project uses the following crates:
 
 - [**clap**](https://crates.io/crates/clap). A command-line parser.
+- [**csv**](https://crates.io/crates/csv). CSV file reading and writing.
+- [**serde**](https://crates.io/crates/serde). Serialization and deserialization framework (used by csv).
 
 To add the crate to the project:
 
@@ -105,3 +114,75 @@ cargo add clap@4.4.11
 ```
 
 **Note**: The crates can be added without specifying the version, cargo will use the latest version. However, it is a best practice to determine the version to be used.
+
+## CSV File Processing
+
+In addition to single coordinate mode, the darts calculator now supports processing multiple coordinates from a CSV file.
+
+### Input CSV Format
+
+The input CSV file must have a header row with columns named `x` and `y`. Coordinates can be integers or floating-point numbers (e.g., `3` or `3.0`).
+
+Example `input.csv`:
+
+```csv
+x,y
+0.0,0.0
+1.4,1.4
+4.0,4.0
+11.0,11.0
+invalid,0.0
+0.0,NaN
+```
+
+### Output CSV Format
+
+The output CSV file includes the original `x` and `y` columns plus a `score` column. Valid coordinates produce numeric scores (0, 1, 5, or 10). Invalid coordinates (non‑numeric, NaN, or infinite) produce `ERROR`.
+
+Example `output.csv`:
+
+```csv
+x,y,score
+0.0,0.0,10
+1.4,1.4,5
+4.0,4.0,1
+11.0,11.0,0
+invalid,0.0,ERROR
+0.0,NaN,ERROR
+```
+
+### Command‑Line Options
+
+| Option | Short | Description |
+|--------|-------|-------------|
+| `--csv <FILE>` | `-c` | Path to input CSV file. |
+| `--output <FILE>` | `-o` | Path to output CSV file (optional). |
+| `--x_coord <X>` | `-x` | Single coordinate X (mutually exclusive with `--csv`). |
+| `--y_coord <Y>` | `-y` | Single coordinate Y (mutually exclusive with `--csv`). |
+
+### Examples
+
+Process a CSV file with explicit output path:
+
+```shell
+darts --csv coordinates.csv --output scores.csv
+```
+
+Process a CSV file with default output name (`coordinates.score.csv`):
+
+```shell
+darts --csv coordinates.csv
+```
+
+Single coordinate mode (unchanged):
+
+```shell
+darts --x_coord 0.0 --y_coord 0.0
+```
+
+### Error Handling
+
+- If a coordinate cannot be parsed as a number, the score is set to `ERROR`.
+- If a coordinate is `NaN` or infinite, the score is set to `ERROR`.
+- Missing `x` or `y` columns in the input CSV cause the program to fail.
+- The output file always includes a header row, even if the input has no data rows.
