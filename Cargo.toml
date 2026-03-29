@@ -2,6 +2,9 @@
 name = "darts"
 version = "0.1.0"
 edition = "2021"
+description = "Dart game score calculator"
+license = "MIT"
+repository = "https://github.com/FedericoAguirre/darts/"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -15,3 +18,10 @@ path = "src/lib.rs"
 [[bin]]
 name = "darts"
 path = "src/main.rs"
+
+[profile.release]
+opt-level = "z"  # Optimize for size
+lto = true       # Enable link-time optimization
+codegen-units = 1  # Single codegen unit for better optimization
+strip = true     # Strip debug symbols
+panic = "abort"  # Abort on panic for smaller binary

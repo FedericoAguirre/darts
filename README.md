@@ -94,16 +94,14 @@ When used, it adds the crate into the **Cargo.toml** file in the **dependencies*
 
 The available Rust crates can be found in [crates.io](https://crates.io/).
 
-The darts project uses 2 crates:
+The darts project uses the clap crate:
 
 - [**clap**](https://crates.io/crates/clap). A command-line parser.
-- [**num-complex**](https://crates.io/crates/num-complex). Complex numbers for Rust.
 
-To add both crates to the project:
+To add the crate to the project:
 
 ```shell
 cargo add clap@4.4.11
-cargo add num-complex@0.4.4
 ```
 
 **Note**: The crates can be added without specifying the version, cargo will use the latest version. However, it is a best practice to determine the version to be used.

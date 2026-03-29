@@ -1,12 +1,21 @@
-pub fn calculate_score(x: f64, y: f64) -> Option<i8> {
+const BULLSEYE_RADIUS_SQ: f32 = 1.0; // 1² = 1
+const INNER_RING_RADIUS_SQ: f32 = 25.0; // 5² = 25
+const OUTER_RING_RADIUS_SQ: f32 = 100.0; // 10² = 100
+
+#[inline]
+pub fn calculate_score(x: f32, y: f32) -> Option<i8> {
     if x.is_nan() || y.is_nan() || x.is_infinite() || y.is_infinite() {
         return None;
     }
-    match x.hypot(y) {
-        r if r < 1.0 => Some(10),
-        r if r < 5.0 => Some(5),
-        r if r < 10.0 => Some(1),
-        _ => Some(0),
+    let r_sq = x * x + y * y;
+    if r_sq < BULLSEYE_RADIUS_SQ {
+        Some(10)
+    } else if r_sq < INNER_RING_RADIUS_SQ {
+        Some(5)
+    } else if r_sq < OUTER_RING_RADIUS_SQ {
+        Some(1)
+    } else {
+        Some(0)
     }
 }
 
@@ -49,15 +58,15 @@ mod tests {
 
     #[test]
     fn test_invalid_nan() {
-        assert_eq!(calculate_score(f64::NAN, 0.0), None);
-        assert_eq!(calculate_score(0.0, f64::NAN), None);
-        assert_eq!(calculate_score(f64::NAN, f64::NAN), None);
+        assert_eq!(calculate_score(f32::NAN, 0.0), None);
+        assert_eq!(calculate_score(0.0, f32::NAN), None);
+        assert_eq!(calculate_score(f32::NAN, f32::NAN), None);
     }
 
     #[test]
     fn test_invalid_infinity() {
-        assert_eq!(calculate_score(f64::INFINITY, 0.0), None);
-        assert_eq!(calculate_score(0.0, f64::NEG_INFINITY), None);
-        assert_eq!(calculate_score(f64::INFINITY, f64::NEG_INFINITY), None);
+        assert_eq!(calculate_score(f32::INFINITY, 0.0), None);
+        assert_eq!(calculate_score(0.0, f32::NEG_INFINITY), None);
+        assert_eq!(calculate_score(f32::INFINITY, f32::NEG_INFINITY), None);
     }
 }
