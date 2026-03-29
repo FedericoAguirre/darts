@@ -7,7 +7,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .about("Calculates the score for a dart throwing game.")
         .arg(
             Arg::new("x")
-                .value_parser(value_parser!(f64))
+                .value_parser(value_parser!(f32))
                 .allow_hyphen_values(true)
                 .long("x_coord")
                 .short('x')
@@ -16,7 +16,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .arg(
             Arg::new("y")
-                .value_parser(value_parser!(f64))
+                .value_parser(value_parser!(f32))
                 .allow_hyphen_values(true)
                 .long("y_coord")
                 .short('y')
@@ -26,10 +26,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .try_get_matches()
         .unwrap_or_else(|e| e.exit());
 
-    let x = matches.get_one::<f64>("x").copied().unwrap();
-    let y = matches.get_one::<f64>("y").copied().unwrap();
+    let x = matches.get_one::<f32>("x").copied().unwrap();
+    let y = matches.get_one::<f32>("y").copied().unwrap();
 
-    let score = darts_lib::calculate_score(x, y).ok_or("Invalid coordinates (NaN or infinity)")?;
+    let score = darts_lib::calculate_score(x, y)
+        .ok_or("Invalid coordinates: x and y must be finite numbers")?;
 
     println!("The score for ({x}, {y}) is: {score}");
     Ok(())
